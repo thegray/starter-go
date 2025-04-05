@@ -4,22 +4,22 @@ import (
 	"net/http"
 	"strconv"
 
+	"starter-go/internal/domain/example"
 	"starter-go/internal/pkg/errors"
-	svc "starter-go/internal/service/example"
 
 	"github.com/gin-gonic/gin"
 )
 
 type Handler struct {
-	service *svc.ExampleService
+	service example.ExampleService
 }
 
-func NewHandler(service *svc.ExampleService) *Handler {
+func NewHandler(service example.ExampleService) *Handler {
 	return &Handler{service: service}
 }
 
 func (h *Handler) GetExample(c *gin.Context) {
-	idStr := c.Param("example_id") // from route :example_id
+	idStr := c.Param("example_id")
 	id, err := strconv.Atoi(idStr)
 	if err != nil || id <= 0 {
 		svcErr := errors.ErrInvalidFieldFormat("example_id", err)
@@ -28,10 +28,9 @@ func (h *Handler) GetExample(c *gin.Context) {
 		return
 	}
 
-	e, err := h.service.GetExample(id)
+	e, err := h.service.GetExample(c.Request.Context(), id)
 	if err != nil {
-		svcErr := errors.ErrNotFound("example", err)
-		c.Error(svcErr)
+		c.Error(err)
 		c.Abort()
 		return
 	}
@@ -48,21 +47,12 @@ func (h *Handler) CreateExample(c *gin.Context) {
 		return
 	}
 
-	// Validate required fields
-	if req.Description == "" {
-		svcErr := errors.ErrMissingMandatoryField("description", nil)
-		c.Error(svcErr)
-		c.Abort()
-		return
-	}
-
-	e, err := h.service.CreateExample(req.Description)
+	e, err := h.service.CreateExample(c.Request.Context(), req.Description)
 	if err != nil {
-		svcErr := errors.New("ERR_CREATE_FAILED", "Failed to create example", err)
-		c.Error(svcErr)
+		c.Error(err)
 		c.Abort()
 		return
 	}
 
-	c.JSON(http.StatusOK, FromDomain(e))
+	c.JSON(http.StatusCreated, FromDomain(e))
 }
