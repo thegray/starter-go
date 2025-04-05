@@ -1,30 +1,37 @@
-package user
+package example
 
 import (
-	"errors"
-	"fmt"
-	"starter-go/internal/domain/example"
+	"context"
+	entity "starter-go/internal/domain/example"
+	"starter-go/internal/pkg/errors"
 )
 
+// compile-time check to ensure ExampleService implements the example.ExampleService interface
+// no effect on the runtime
+var _ entity.ExampleService = (*ExampleService)(nil)
+
 type ExampleService struct {
-	repo example.ExampleRepository
+	repo entity.ExampleRepository
 }
 
-func NewService(repo example.ExampleRepository) *ExampleService {
+func NewService(repo entity.ExampleRepository) *ExampleService {
 	return &ExampleService{repo: repo}
 }
 
-func (s *ExampleService) GetExample(id int) (*example.Example, error) {
-	fmt.Println("PBPBPB-get example service")
-	if id <= 0 {
-		return nil, errors.New("invalid example ID")
+func (s *ExampleService) GetExample(ctx context.Context, id int) (*entity.Example, error) {
+	example, err := s.repo.FindByID(ctx, id)
+	if err != nil {
+		return nil, errors.ErrNotFound("example", err)
 	}
-	// return &example.Example{ID: id, Description: "test"}, nil
-	return s.repo.FindByID(id)
+	return example, nil
 }
 
-func (s *ExampleService) CreateExample(desc string) (*example.Example, error) {
-	e := &example.Example{Description: desc}
-	err := s.repo.Save(e)
-	return e, err
+func (s *ExampleService) CreateExample(ctx context.Context, desc string) (*entity.Example, error) {
+	e := &entity.Example{Description: desc}
+	err := s.repo.Save(ctx, e)
+	if err != nil {
+		return nil, errors.New("EXAMPLE_CREATE_FAILED", "Failed to create example", err)
+	}
+
+	return e, nil
 }
