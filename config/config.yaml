@@ -1,0 +1,46 @@
+server:
+  read_timeout: 10000 # in ms
+  write_timeout: 65000 # in ms
+  time_zone: "Asia/Jakarta"
+  loglevel: INFO
+  base_url: http://localhost:10440
+  env: local
+
+logger:
+  enable_stdout: True
+  enable_logfile: True
+  caller_skipset: True
+  caller_skip: 2
+  logfile_configs:
+    - levels: 
+      - info
+      fullpath_filename:  ./log/access.log
+      is_access_log:      True
+      max_size:           500
+      max_age:            7
+      max_backups:        0
+      local_time:         True
+      compress:           False
+    - levels: 
+      - warn
+      - error
+      - dpanic
+      - panic
+      - fatal
+      fullpath_filename:  ./log/error.log
+      is_access_log:      False
+      max_size:           500
+      max_age:            7
+      max_backups:        0
+      local_time:         True
+      compress:           False
+    - levels: 
+      - debug
+      - info
+      fullpath_filename:  ./log/data.log
+      is_access_log:      False
+      max_size:           500
+      max_age:            7
+      max_backups:        0
+      local_time:         True
+      compress:           False

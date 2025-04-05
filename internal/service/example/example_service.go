@@ -2,6 +2,7 @@ package user
 
 import (
 	"errors"
+	"fmt"
 	"starter-go/internal/domain/example"
 )
 
@@ -14,9 +15,11 @@ func NewService(repo example.ExampleRepository) *ExampleService {
 }
 
 func (s *ExampleService) GetExample(id int) (*example.Example, error) {
+	fmt.Println("PBPBPB-get example service")
 	if id <= 0 {
 		return nil, errors.New("invalid example ID")
 	}
+	// return &example.Example{ID: id, Description: "test"}, nil
 	return s.repo.FindByID(id)
 }
 
