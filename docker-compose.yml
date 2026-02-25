@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./config:/app/config
+      - ./log:/app/log
+    environment:
+      - APP_SERVER_PORT=8000
+      - APP_SERVER_BASE_URL=http://app:8000
+      - APP_LOGGER_ENABLE_LOGFILE=false
