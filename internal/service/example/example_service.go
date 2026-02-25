@@ -26,6 +26,14 @@ func (s *ExampleService) GetExample(ctx context.Context, id int) (*entity.Exampl
 	return example, nil
 }
 
+func (s *ExampleService) GetAllExamples(ctx context.Context) ([]*entity.Example, error) {
+	examples, err := s.repo.FindAll(ctx)
+	if err != nil {
+		return nil, errors.New("EXAMPLE_FETCH_FAILED", "Failed to fetch examples", err)
+	}
+	return examples, nil
+}
+
 func (s *ExampleService) CreateExample(ctx context.Context, desc string) (*entity.Example, error) {
 	e := &entity.Example{Description: desc}
 	err := s.repo.Save(ctx, e)

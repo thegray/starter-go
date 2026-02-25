@@ -38,6 +38,21 @@ func (r *MemoryRepository) FindByID(ctx context.Context, id int) (*example.Examp
 	return nil, fmt.Errorf("example with ID %d not found", id)
 }
 
+// FindAll retrieves all examples
+func (r *MemoryRepository) FindAll(ctx context.Context) ([]*example.Example, error) {
+	r.mu.RLock()
+	defer r.mu.RUnlock()
+
+	result := make([]*example.Example, 0, len(r.examples))
+	for _, ex := range r.examples {
+		result = append(result, &example.Example{
+			ID:          ex.ID,
+			Description: ex.Description,
+		})
+	}
+	return result, nil
+}
+
 // Save stores an example
 func (r *MemoryRepository) Save(ctx context.Context, e *example.Example) error {
 	r.mu.Lock()

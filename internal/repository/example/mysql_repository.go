@@ -23,6 +23,25 @@ func (r *ExampleRepository) FindByID(ctx context.Context, id int) (*example.Exam
 	return model.ToDomain(), nil
 }
 
+func (r *ExampleRepository) FindAll(ctx context.Context) ([]*example.Example, error) {
+	var models []ExampleModel
+	if err := r.db.WithContext(ctx).Find(&models).Error; err != nil {
+		return nil, err
+	}
+
+	result := make([]*example.Example, len(models))
+	for i, m := range models {
+		result[i] = m.ToDomain()
+	}
+
+	return result, nil
+}
+
 func (r *ExampleRepository) Save(ctx context.Context, e *example.Example) error {
-	return r.db.WithContext(ctx).Create(FromDomain(e)).Error
+	model := FromDomain(e)
+	if err := r.db.WithContext(ctx).Create(model).Error; err != nil {
+		return err
+	}
+	e.ID = int(model.ID)
+	return nil
 }

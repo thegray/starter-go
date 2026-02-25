@@ -7,6 +7,13 @@ server:
   port: 8000
   env: local
 
+db:
+  host: localhost
+  port: 3306
+  user: root
+  password: password
+  name: loan
+
 logger:
   enable_stdout: True
   enable_logfile: True

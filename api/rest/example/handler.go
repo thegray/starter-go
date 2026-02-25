@@ -38,6 +38,22 @@ func (h *Handler) GetExample(c *gin.Context) {
 	c.JSON(http.StatusOK, FromDomain(e))
 }
 
+func (h *Handler) GetAllExamples(c *gin.Context) {
+	examples, err := h.service.GetAllExamples(c.Request.Context())
+	if err != nil {
+		c.Error(err)
+		c.Abort()
+		return
+	}
+
+	result := make([]ExampleResponse, len(examples))
+	for i, e := range examples {
+		result[i] = FromDomain(e)
+	}
+
+	c.JSON(http.StatusOK, result)
+}
+
 func (h *Handler) CreateExample(c *gin.Context) {
 	var req CreateExampleRequest
 	if err := c.ShouldBindJSON(&req); err != nil {

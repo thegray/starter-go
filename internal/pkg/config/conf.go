@@ -8,8 +8,9 @@ import (
 )
 
 type appConfig struct {
-	Server serverConfig `yaml:"server"`
-	Logger loggerConfig `yaml:"logger"`
+	Server serverConfig `yaml:"server" mapstructure:"server"`
+	Logger loggerConfig `yaml:"logger" mapstructure:"logger"`
+	DB     databaseConfig `yaml:"db" mapstructure:"db"`
 }
 
 var cfg = new(appConfig)

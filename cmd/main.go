@@ -15,6 +15,7 @@ import (
 	"starter-go/internal/pkg/app"
 	"starter-go/internal/pkg/config"
 	"starter-go/internal/pkg/driver/httpserver"
+	"starter-go/internal/pkg/driver/mysql"
 	"starter-go/internal/pkg/logger"
 	exampleRepo "starter-go/internal/repository/example"
 	exampleService "starter-go/internal/service/example"
@@ -55,9 +56,14 @@ func main() {
 	srv := httpserver.NewServer()
 	server.RegisterRoutes(srv.Engine())
 
+	// initialize MySQL Database
+	db := mysql.NewDatabase()
+	exampleRepo := exampleRepo.NewExampleRepository(db)
+	logger.Info("Starting application with mysql repository")
+
 	// init inmemory repository (for example only, can replace with actual db)
-	exampleRepo := inMemoryInit()
-	logger.Info("Starting application with inmemory repository")
+	// exampleRepo := inMemoryInit()
+	// logger.Info("Starting application with inmemory repository")
 
 	// initialize service and handler
 	exSvc := exampleService.NewService(exampleRepo)
