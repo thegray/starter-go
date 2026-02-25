@@ -5,22 +5,22 @@ import (
 )
 
 type loggerConfig struct {
-	EnableStdout   bool            `yaml:"enable_stdout"`
-	EnableLogFile  bool            `yaml:"enable_logfile"`
-	CallerSkipSet  bool            `yaml:"caller_skipset"`
-	CallerSkip     int             `yaml:"caller_skip"`
-	LogFileConfigs []logFileConfig `yaml:"logfile_configs"`
+	EnableStdout   bool            `yaml:"enable_stdout" mapstructure:"enable_stdout"`
+	EnableLogFile  bool            `yaml:"enable_logfile" mapstructure:"enable_logfile"`
+	CallerSkipSet  bool            `yaml:"caller_skipset" mapstructure:"caller_skipset"`
+	CallerSkip     int             `yaml:"caller_skip" mapstructure:"caller_skip"`
+	LogFileConfigs []logFileConfig `yaml:"logfile_configs" mapstructure:"logfile_configs"`
 }
 
 type logFileConfig struct {
-	Levels           []string `yaml:"levels"`
-	IsAccessLog      bool     `yaml:"is_access_log"`
-	FullpathFilename string   `yaml:"fullpath_filename"`
-	MaxSize          int      `yaml:"max_size"`
-	MaxAge           int      `yaml:"max_age"`
-	MaxBackups       int      `yaml:"max_backups"`
-	LocalTime        bool     `yaml:"local_time"`
-	Compress         bool     `yaml:"compress"`
+	Levels           []string `yaml:"levels" mapstructure:"levels"`
+	IsAccessLog      bool     `yaml:"is_access_log" mapstructure:"is_access_log"`
+	FullpathFilename string   `yaml:"fullpath_filename" mapstructure:"fullpath_filename"`
+	MaxSize          int      `yaml:"max_size" mapstructure:"max_size"`
+	MaxAge           int      `yaml:"max_age" mapstructure:"max_age"`
+	MaxBackups       int      `yaml:"max_backups" mapstructure:"max_backups"`
+	LocalTime        bool     `yaml:"local_time" mapstructure:"local_time"`
+	Compress         bool     `yaml:"compress" mapstructure:"compress"`
 }
 
 func LoggerConfig() logger.LogConfig {

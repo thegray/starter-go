@@ -2,9 +2,9 @@ package config
 
 import (
 	"fmt"
-	"io/ioutil"
+	"strings"
 
-	"gopkg.in/yaml.v2"
+	"github.com/spf13/viper"
 )
 
 type appConfig struct {
@@ -16,12 +16,21 @@ var cfg = new(appConfig)
 
 func Init(path string) error {
 	fmt.Printf("reading config path: %s\n", path)
-	b, err := ioutil.ReadFile(path)
-	if err != nil {
+	
+	viper.SetConfigFile(path)
+	viper.SetConfigType("yaml")
+
+	// Set a prefix for environment variables, so we can override config with APP_ prefixed env vars.
+	viper.SetEnvPrefix("APP")
+	viper.AutomaticEnv()
+	// a.b.c will be APP_A_B_C
+	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
+
+	if err := viper.ReadInConfig(); err != nil {
 		return fmt.Errorf("error reading config file, %s", err)
 	}
 
-	if err := yaml.Unmarshal(b, cfg); err != nil {
+	if err := viper.Unmarshal(cfg); err != nil {
 		return fmt.Errorf("unable to decode into struct, %s", err)
 	}
 
