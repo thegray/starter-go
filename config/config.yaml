@@ -3,7 +3,8 @@ server:
   write_timeout: 65000 # in ms
   time_zone: "Asia/Jakarta"
   loglevel: INFO
-  base_url: http://localhost:10440
+  base_url: http://localhost:8000
+  port: 8000
   env: local
 
 logger:

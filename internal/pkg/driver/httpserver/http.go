@@ -2,6 +2,7 @@ package httpserver
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -34,7 +35,7 @@ func NewServer() server {
 	router.Use(mw.ErrorHandler())
 
 	s := &http.Server{
-		Addr:         getPort(),
+		Addr:         fmt.Sprintf(":%d", config.Server().GetPort()),
 		Handler:      router,
 		ReadTimeout:  time.Duration(config.Server().GetReadTimeout()) * time.Millisecond,
 		WriteTimeout: time.Duration(config.Server().GetWriteTimeout()) * time.Millisecond,
@@ -65,12 +66,4 @@ func (srv server) Stop() {
 	if err := srv.s.Shutdown(ctx); err != nil {
 		log.Fatalf("Server forced to shutdown: %v", err)
 	}
-}
-
-func getPort() string {
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "8080" // fallback default
-	}
-	return ":" + port
 }
