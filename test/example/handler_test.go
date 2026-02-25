@@ -21,6 +21,7 @@ import (
 type mockExampleService struct {
 	getExample    func(context.Context, int) (*entity.Example, error)
 	createExample func(context.Context, string) (*entity.Example, error)
+	getAllExample func(context.Context) ([]*entity.Example, error)
 }
 
 func (m *mockExampleService) GetExample(ctx context.Context, id int) (*entity.Example, error) {
@@ -29,6 +30,10 @@ func (m *mockExampleService) GetExample(ctx context.Context, id int) (*entity.Ex
 
 func (m *mockExampleService) CreateExample(ctx context.Context, desc string) (*entity.Example, error) {
 	return m.createExample(ctx, desc)
+}
+
+func (m *mockExampleService) GetAllExamples(ctx context.Context) ([]*entity.Example, error) {
+	return m.getAllExample(ctx)
 }
 
 func setupRouter() *gin.Engine {
@@ -89,7 +94,7 @@ func TestGetExample(t *testing.T) {
 			handler := example.NewHandler(mockSvc)
 			example.RegisterRoutes(r, handler)
 
-			req, _ := http.NewRequest("GET", "/api/v1/example/"+tt.exampleID, nil)
+			req, _ := http.NewRequest("GET", "/api/v1/examples/"+tt.exampleID, nil)
 			w := httptest.NewRecorder()
 			r.ServeHTTP(w, req)
 
@@ -163,7 +168,7 @@ func TestCreateExampleEndpoint(t *testing.T) {
 			example.RegisterRoutes(r, handler)
 
 			jsonBody, _ := json.Marshal(tt.requestBody)
-			req, _ := http.NewRequest("POST", "/api/v1/example/", bytes.NewBuffer(jsonBody))
+			req, _ := http.NewRequest("POST", "/api/v1/examples/", bytes.NewBuffer(jsonBody))
 			req.Header.Set("Content-Type", "application/json")
 
 			w := httptest.NewRecorder()

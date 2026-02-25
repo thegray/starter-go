@@ -12,6 +12,7 @@ import (
 type mockRepo struct {
 	findByID func(context.Context, int) (*example.Example, error)
 	save     func(context.Context, *example.Example) error
+	findAll  func(context.Context) ([]*example.Example, error)
 }
 
 func (m *mockRepo) FindByID(ctx context.Context, id int) (*example.Example, error) {
@@ -20,6 +21,10 @@ func (m *mockRepo) FindByID(ctx context.Context, id int) (*example.Example, erro
 
 func (m *mockRepo) Save(ctx context.Context, e *example.Example) error {
 	return m.save(ctx, e)
+}
+
+func (m *mockRepo) FindAll(ctx context.Context) ([]*example.Example, error) {
+	return m.findAll(ctx)
 }
 
 func TestGetExample_Success(t *testing.T) {
